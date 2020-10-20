@@ -14,8 +14,8 @@
     @include('vendor.ad_head_js')
 </head>
 <body>
-<div>
-<nav id="app" class="navbar navbar-default navbar-inverse" role="navigation">
+<div id="vue-wrapper">
+<nav class="navbar navbar-default navbar-inverse" role="navigation">
     <div class="container">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
@@ -52,7 +52,9 @@
     <div class="footer row">
         <div class="col-md-12 about">
             <p class="version">
-                <?= date('Y') ?> &copy; DestinyStatus <a href="https://github.com/TrackerNetwork/DestinyStatus/blob/master/CHANGELOG.md" target="_blank">v<?= version(); ?></a>
+                <?= date('Y') ?> &copy; DestinyStatus <a href="https://github.com/TrackerNetwork/DestinyStatus/blob/master/CHANGELOG.md" target="_blank">
+                    v<?= App\Helpers\VersionHelper::version(); ?>
+                </a>
                 @if (App::isLocal())
                     [<?= App::environment() ?>]
                 @endif

@@ -6,6 +6,7 @@ namespace Destiny;
 
 use App\Enums\Console;
 use App\Helpers\ConsoleHelper;
+use App\Helpers\StringHelper;
 
 /**
  * @property string $supplementalDisplayName
@@ -20,32 +21,37 @@ use App\Helpers\ConsoleHelper;
  */
 class Player extends Model
 {
-    protected function gPlatform() : string
+    protected function gPlatform(): string
     {
         return ConsoleHelper::getConsoleStringFromId((int) $this->membershipType);
     }
 
-    protected function gPlatformName() : string
+    protected function gPlatformName(): string
     {
         switch ($this->membershipType) {
-            case Console::Xbox:
+            case Console::XBOX:
                 return 'Xbox';
-            case Console::Playstation:
+            case Console::PLAYSTATION:
                 return 'PlayStation';
-            case Console::Blizzard:
+            case Console::BLIZZARD:
                 return 'PC';
+            case Console::STEAM:
+                return 'Steam';
             default:
                 return 'Unknown: '.$this->membershipType;
         }
     }
 
-    protected function gPlatformIcon() : string
+    protected function gPlatformIcon(): string
     {
         return ConsoleHelper::getPlatformImage($this->platform);
     }
 
-    protected function gUrl() : string
+    protected function gUrl(): string
     {
-        return route('account', ['platform' => $this->platform, 'player' => url_slug($this->displayName)]);
+        return route('account', [
+            'platform' => $this->platform,
+            'name' => StringHelper::urlSlug($this->displayName)
+        ]);
     }
 }

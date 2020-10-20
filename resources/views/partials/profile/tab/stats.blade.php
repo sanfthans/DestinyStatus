@@ -8,6 +8,8 @@
 $pvp = $character->statsPvP;
 $pve = $character->statsPvE;
 $all = $character->statsAll;
+
+use App\Helpers\TimeHelper;
 ?>
 <?php if ($pvp->isEmpty() && $pve->isEmpty() && $all->isEmpty()): ?>
     <div class="panel">
@@ -16,7 +18,7 @@ $all = $character->statsAll;
 <?php else: ?>
 <div class="time panel"
      <?php if($character->minutesPlayedThisSession): ?>
-     title="Played <?= e($character->lastPlayed->diffForHumans()) ?> for <?= strip_tags(duration_human($character->minutesPlayedThisSession)) ?>" data-toggle="tooltip"
+     title="Played <?= e($character->lastPlayed->diffForHumans()) ?> for <?= strip_tags(TimeHelper::durationHuman($character->minutesPlayedThisSession)) ?>" data-toggle="tooltip"
 <?php endif; ?>
 >
     <div class="info">Total Time Played (including Tower and Orbit)</div>
@@ -38,9 +40,6 @@ $all = $character->statsAll;
     @include('partials.profile.stats.ability', ['pve' => $pve, 'pvp' => $pvp, 'key' => 'stats-ability-'.$character->characterId])
 </div>
 <div class="stats panel">
-    @include('partials.profile.stats.primary', ['pve' => $pve, 'pvp' => $pvp, 'key' => 'stats-primary-'.$character->characterId])
-</div>
-<div class="stats panel">
-    @include('partials.profile.stats.power', ['pve' => $pve, 'pvp' => $pvp, 'key' => 'stats-power-'.$character->characterId])
+    @include('partials.profile.stats.weapons', ['pve' => $pve, 'pvp' => $pvp, 'key' => 'stats-primary-'.$character->characterId])
 </div>
 <?php endif; ?>

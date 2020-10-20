@@ -3,19 +3,20 @@
 namespace App\Models\Destiny1;
 
 use App\Account;
+use App\Helpers\StringHelper;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class Account.
  *
- * @property int $account_id
- * @property int $raid_completions
- * @property int $playtime
- * @property float $kd
- * @property int $total_games
- * @property int $total_kills
- * @property int $grimoire
+ * @property int    $account_id
+ * @property int    $raid_completions
+ * @property int    $playtime
+ * @property float  $kd
+ * @property int    $total_games
+ * @property int    $total_kills
+ * @property int    $grimoire
  * @property Carbon $created_at
  * @property Carbon $updated_at
  * @property-read \App\Account $account
@@ -58,22 +59,22 @@ class Stats extends Model
 
     public function getKdAttribute($value)
     {
-        return n($value, 2);
+        return StringHelper::number($value, 2);
     }
 
     public function getTotalGamesAttribute($value)
     {
-        return n($value, 0);
+        return StringHelper::number($value, 0);
     }
 
     public function getRaidCompletionsAttribute($value)
     {
-        return n($value);
+        return StringHelper::number($value);
     }
 
     public function getGrimoireAttribute($value)
     {
-        return n($value);
+        return StringHelper::number($value);
     }
 
     //---------------------------------------------------------------------------------

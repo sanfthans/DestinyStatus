@@ -3,6 +3,7 @@
 namespace Destiny\Definitions\Components;
 
 use Carbon\Carbon;
+use Carbon\CarbonImmutable;
 use Destiny\Activity\ActivityStatCollection;
 use Destiny\Collection;
 use Destiny\Definitions\Definition;
@@ -21,25 +22,25 @@ use Destiny\StatisticsCollection;
  * Class Character.
  *
  * @property string $membershipId
- * @property int $membershipType
+ * @property int    $membershipType
  * @property string $characterId
  * @property string $dateLastPlayed
- * @property int $minutesPlayedThisSession
- * @property int $minutesPlayedTotal
- * @property int $light
- * @property array $stats
+ * @property int    $minutesPlayedThisSession
+ * @property int    $minutesPlayedTotal
+ * @property int    $light
+ * @property array  $stats
  * @property string $raceHash
  * @property string $genderHash
  * @property string $classHash
- * @property int $raceType
- * @property int $classType
- * @property int $genderType
+ * @property int    $raceType
+ * @property int    $classType
+ * @property int    $genderType
  * @property string $emblemPath
  * @property string $emblemBackgroundPath
  * @property string $emblemHash
- * @property array $levelProgression
- * @property int $baseCharacterLevel
- * @property float $percentToNextLevel
+ * @property array  $levelProgression
+ * @property int    $baseCharacterLevel
+ * @property float  $percentToNextLevel
  * @property-read Progression $progression
  * @property-read DestinyClass $class
  * @property-read Race $race
@@ -67,7 +68,7 @@ class Character extends Definition
         'combinedStats',
     ];
 
-    const MAX_LIGHT = 335;
+    const MAX_LIGHT = 1060;
 
     // activities
     const MILESTONE_NIGHTFALL = '2171429505';
@@ -97,9 +98,9 @@ class Character extends Definition
         return new StatCollection($this->properties['stats']);
     }
 
-    protected function gLastPlayed()
+    protected function gLastPlayed(): CarbonImmutable
     {
-        return carbon($this->dateLastPlayed);
+        return CarbonImmutable::parse($this->dateLastPlayed);
     }
 
     protected function gMinutesPlayedActive()
@@ -116,21 +117,21 @@ class Character extends Definition
 
     protected function gClass()
     {
-        $class = manifest()->destinyClass($this->classHash);
+        $class = app('destiny.manifest')->destinyClass($this->classHash);
 
         return $class->display->name;
     }
 
     protected function gRace()
     {
-        $race = manifest()->race($this->raceHash);
+        $race = app('destiny.manifest')->race($this->raceHash);
 
         return $race->display->name;
     }
 
     protected function gGender()
     {
-        $gender = manifest()->gender($this->genderHash);
+        $gender = app('destiny.manifest')->gender($this->genderHash);
 
         return $gender->display->name;
     }
@@ -193,7 +194,7 @@ class Character extends Definition
         return $this->getMilestones([self::MILESTONE_LEVITHIAN_27]);
     }
 
-    private function getMilestones(array $hashes) : array
+    private function getMilestones(array $hashes): array
     {
         /** @var Collection $originalMilestones */
         $originalMilestones = $this->getNonMutatedProperty('milestones');

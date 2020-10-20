@@ -9,16 +9,16 @@ use Destiny\Definitions\Definition;
  *
  * @property string $factionHash
  * @property string $progressionHash
- * @property int $dailyProgress
- * @property int $dailyLimit
- * @property int $weeklyProgress
- * @property int $weeklyLimit
- * @property int $currentProgress
- * @property int $level
- * @property int $levelCap
- * @property int $stepIndex
- * @property int $progressToNextLevel
- * @property int $nextLevelAt
+ * @property int    $dailyProgress
+ * @property int    $dailyLimit
+ * @property int    $weeklyProgress
+ * @property int    $weeklyLimit
+ * @property int    $currentProgress
+ * @property int    $level
+ * @property int    $levelCap
+ * @property int    $stepIndex
+ * @property int    $progressToNextLevel
+ * @property int    $nextLevelAt
  * @property-read \Destiny\Definitions\Manifest\Faction $faction
  * @property-read \Destiny\Definitions\Manifest\Progression $progression
  * @property-read string $percentToNextLevel
@@ -34,12 +34,12 @@ class Faction extends Definition
 
     protected function gFaction()
     {
-        return manifest()->faction((string) $this->factionHash);
+        return app('destiny.manifest')->faction((string) $this->factionHash);
     }
 
     protected function gProgression()
     {
-        return manifest()->progression((string) $this->progressionHash);
+        return app('destiny.manifest')->progression((string) $this->progressionHash);
     }
 
     protected function gName()

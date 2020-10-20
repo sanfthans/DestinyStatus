@@ -2,22 +2,23 @@
 
 namespace Destiny\Definitions\Progression;
 
+use App\Helpers\StringHelper;
 use Destiny\Definitions\Definition;
 
 /**
  * Class Progression.
  *
  * @property string $progressionHash
- * @property int $dailyProgress
- * @property int $dailyLimit
- * @property int $weeklyProgress
- * @property int $weeklyLimit
- * @property int $currentProgress
- * @property int $level
- * @property int $levelCap
- * @property int $stepIndex
- * @property int $progressToNextLevel
- * @property int $nextLevelAt
+ * @property int    $dailyProgress
+ * @property int    $dailyLimit
+ * @property int    $weeklyProgress
+ * @property int    $weeklyLimit
+ * @property int    $currentProgress
+ * @property int    $level
+ * @property int    $levelCap
+ * @property int    $stepIndex
+ * @property int    $progressToNextLevel
+ * @property int    $nextLevelAt
  * @property-read \Destiny\Definitions\Manifest\Progression $definition
  * @property-read string $icon
  * @property-read string $name
@@ -33,7 +34,7 @@ class Progression extends Definition
 
     protected function gDefinition()
     {
-        return manifest()->progression($this->progressionHash);
+        return app('destiny.manifest')->progression($this->progressionHash);
     }
 
     protected function gIcon()
@@ -66,7 +67,7 @@ class Progression extends Definition
             return 'MAX';
         }
 
-        return n($this->progressToNextLevel).'/'.n($this->nextLevelAt);
+        return StringHelper::number($this->progressToNextLevel) . '/' . StringHelper::number($this->nextLevelAt);
     }
 
     private function isMax()

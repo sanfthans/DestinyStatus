@@ -8,8 +8,8 @@ use Destiny\LeaderboardEntryCollection;
 /**
  * Class Leaderboard.
  *
- * @property string $statId
- * @property array $entries
+ * @property string         $statId
+ * @property array          $entries
  * @property HistoricalStat $definition
  * @property-read LeaderboardEntryCollection $rankings
  */
@@ -17,7 +17,7 @@ class Leaderboard extends Definition
 {
     protected function gDefinition()
     {
-        return manifest()->historicalStat($this->statId);
+        return app('destiny.manifest')->historicalStat($this->statId);
     }
 
     protected function gStatName()

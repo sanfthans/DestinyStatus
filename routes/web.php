@@ -11,7 +11,7 @@
 |
 */
 
-Route::pattern('platform', 'psn|xbl|pc');
+Route::pattern('platform', 'psn|xbl|pc|steam');
 
 Route::any('/', ['uses' => 'HomeController@index', 'as' => 'home']);
 
@@ -20,7 +20,7 @@ Route::any('/faq', ['uses' => 'HomeController@faq', 'as' => 'faq']);
 
 Route::get('select/{gamertag}', ['uses' => 'HomeController@select', 'as' => 'select']);
 
-Route::group(['prefix' => '{platform}/{player}'], function () {
+Route::group(['prefix' => '{platform}/{name}'], function () {
     Route::get('/', ['uses' => 'AccountController@index', 'as' => 'account']);
     Route::get('/clan', ['uses' => 'AccountController@clan', 'as' => 'clan']);
 });

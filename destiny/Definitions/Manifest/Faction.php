@@ -8,11 +8,11 @@ use Destiny\Definitions\Definition;
 /**
  * Class Faction.
  *
- * @property array $displayProperties
- * @property string $progressionHash
- * @property string $hash
- * @property int $index
- * @property bool $redacted
+ * @property array             $displayProperties
+ * @property string            $progressionHash
+ * @property string            $hash
+ * @property int               $index
+ * @property bool              $redacted
  * @property DisplayProperties $display
  * @property-read Progression $progression
  */
@@ -29,6 +29,6 @@ class Faction extends Definition
 
     protected function gProgression()
     {
-        return manifest()->progression($this->progressionHash);
+        return app('destiny.manifest')->progression($this->progressionHash);
     }
 }

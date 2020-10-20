@@ -2,6 +2,8 @@
 
 namespace Destiny;
 
+use App\Exceptions\Destiny\GenericDestinyException;
+use App\Helpers\VersionHelper;
 use App\Http\Controllers\AuthController;
 use App\Models\Bungie;
 use bandwidthThrottle\tokenBucket\Rate;
@@ -10,7 +12,6 @@ use bandwidthThrottle\tokenBucket\TokenBucket;
 use Barryvdh\Debugbar\Facade as Debugbar;
 use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
 use Cache;
-use DestinyException;
 use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Cookie\FileCookieJar;
@@ -19,6 +20,7 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Redis;
 
 class DestinyClient extends Client
@@ -30,7 +32,7 @@ class DestinyClient extends Client
 
     protected $proxyUrl = null;
 
-    /** @var TokenBucket $bucket */
+    /** @var TokenBucket */
     public static $bucket = null;
 
     /**
@@ -40,8 +42,13 @@ class DestinyClient extends Client
      */
     public function __construct(string $apiKey)
     {
+        // User-Agent: DestinyStatus/v3.0.0 AppId/123456 (+destinystatus.com;admin@destinystatus.com)
+        $versionSlug = 'DestinyStatus/'.VersionHelper::version();
+        $appIdSlug = 'AppId/'.config('services.bungie.client_id');
+        $contactSlug = 'destinystatus.com;'.config('services.bungie.contact');
+
         $headers = [
-            'User-Agent' => 'DestinyStatus.com',
+            'User-Agent' => $versionSlug.' '.$appIdSlug.' (+'.$contactSlug.')',
             'X-API-Key'  => $apiKey,
         ];
 
@@ -71,7 +78,7 @@ class DestinyClient extends Client
     /**
      * @param \Destiny\DestinyRequest[]|\Destiny\DestinyRequest $requests
      *
-     * @throws \DestinyException
+     * @throws GenericDestinyException
      * @throws \Exception
      *
      * @return array
@@ -125,32 +132,31 @@ class DestinyClient extends Client
                         /* @var \ErrorException $result */
                         Cache::store('file')->forget($request->key);
 
-                        throw new DestinyException($result->getMessage(), $result->getLine(), $result);
+                        throw new GenericDestinyException($result->getMessage(), $result->getLine(), $result);
                     }
                 }
 
                 if ($result !== null) {
                     $response = json_decode($result->getBody()->getContents(), true);
 
-                    if (array_get($response, 'ErrorStatus') !== 'Success') {
+                    if (Arr::get($response, 'ErrorStatus') !== 'Success') {
                         Cache::store('file')->forget($request->key);
                         Bugsnag::setMetaData(['bungie' => $response]);
 
-                        if (array_get($response, 'ErrorCode') === $this->destinyPrivacyRestriction) {
+                        if (Arr::get($response, 'ErrorCode') === $this->destinyPrivacyRestriction) {
                             $response = ['private' => true];
                         } else {
                             if ($request->salvageable) {
                                 $response = null;
                             } else {
                                 if ($response !== null) {
-                                    throw new DestinyException(array_get($response, 'Message'), $result->getStatusCode());
-                                } else {
-                                    throw new DestinyException($result->getReasonPhrase(), $result->getStatusCode());
+                                    throw new GenericDestinyException(Arr::get($response, 'Message'), $result->getStatusCode());
                                 }
+                                throw new GenericDestinyException($result->getReasonPhrase(), $result->getStatusCode());
                             }
                         }
                     } else {
-                        $response = array_get($response, 'Response');
+                        $response = Arr::get($response, 'Response');
                     }
 
                     if (empty($response)) {
@@ -158,7 +164,8 @@ class DestinyClient extends Client
                     }
 
                     if ($request->cache) {
-                        Cache::store('file')->put($request->key, $response, $request->cache);
+                        $seconds = 60 * $request->cache;
+                        Cache::store('file')->put($request->key, $response, $seconds);
                     }
 
                     $responses[$key] = $response;
@@ -182,7 +189,7 @@ class DestinyClient extends Client
      *
      * @return DestinyRequest
      */
-    private function applyProxyIfNeeded(DestinyRequest $request) : DestinyRequest
+    private function applyProxyIfNeeded(DestinyRequest $request): DestinyRequest
     {
         if ($this->proxyUrl !== null) {
             if (self::$bucket === null) {

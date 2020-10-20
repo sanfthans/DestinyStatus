@@ -7,12 +7,13 @@ use Carbon\Carbon;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\UserProvider;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 /**
  * Class Bungie.
  *
- * @property int $id
- * @property int $membership_id
+ * @property int    $id
+ * @property int    $membership_id
  * @property Carbon $first_access
  * @property Carbon $last_update
  * @property string $unique_name
@@ -22,9 +23,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $access_token
  * @property Carbon $expires
  * @property string $remember_token
- * @property int $preferred_account_id
+ * @property int    $preferred_account_id
  * @property-read Account $account
- * @property-read Account[] $accounts
+ * @property-read Collection|Account[] $accounts
  * @mixin \Eloquent
  */
 class Bungie extends Model implements Authenticatable, UserProvider
@@ -94,12 +95,12 @@ class Bungie extends Model implements Authenticatable, UserProvider
         return $this->hasOne(Account::class, 'id', 'preferred_account_id');
     }
 
-    public function url() : string
+    public function url(): string
     {
         return $this->account->url();
     }
 
-    public function isActive() : bool
+    public function isActive(): bool
     {
         return $this->expires->isFuture();
     }

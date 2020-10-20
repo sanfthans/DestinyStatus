@@ -34,7 +34,7 @@ class DestinyComponentUrlBuilder
     /**
      * @return string
      */
-    public function buildUrl() : string
+    public function buildUrl(): string
     {
         return $this->uri;
     }
@@ -42,7 +42,7 @@ class DestinyComponentUrlBuilder
     /**
      * @return array
      */
-    public function getComponentArray() : array
+    public function getComponentArray(): array
     {
         return [
             'components' => implode(',', $this->components),
@@ -56,9 +56,9 @@ class DestinyComponentUrlBuilder
      *
      * @return $this
      */
-    public function addProfiles() : self
+    public function addProfiles(): self
     {
-        $this->components[] = ComponentTypes::Profiles;
+        $this->components[] = ComponentTypes::PROFILES;
 
         return $this;
     }
@@ -68,9 +68,9 @@ class DestinyComponentUrlBuilder
      *
      * @return $this
      */
-    public function addVendorReceipts() : self
+    public function addVendorReceipts(): self
     {
-        $this->components[] = ComponentTypes::VendorReceipts;
+        $this->components[] = ComponentTypes::VENDOR_RECEIPTS;
 
         return $this;
     }
@@ -81,9 +81,9 @@ class DestinyComponentUrlBuilder
      *
      * @return $this
      */
-    public function addProfileInventories() : self
+    public function addProfileInventories(): self
     {
-        $this->components[] = ComponentTypes::ProfileInventories;
+        $this->components[] = ComponentTypes::PROFILE_INVENTORIES;
 
         return $this;
     }
@@ -94,9 +94,36 @@ class DestinyComponentUrlBuilder
      *
      * @return $this
      */
-    public function addProfileCurrencies() : self
+    public function addProfileCurrencies(): self
     {
-        $this->components[] = ComponentTypes::ProfileCurrencies;
+        $this->components[] = ComponentTypes::PROFILE_CURRENCIES;
+
+        return $this;
+    }
+
+    /**
+     * This will get you any progression-related information that exists on a Profile-wide level, across all characters.
+     *
+     *
+     * @return $this
+     */
+    public function addProfileProgression(): self
+    {
+        $this->components[] = ComponentTypes::PROFILE_PROGRESSION;
+
+        return $this;
+    }
+
+    /**
+     * This will get you information about the silver that this profile has on every platform on which it plays.
+     * You may only request this component for the logged in user's Profile, and will not receive it if
+     * you request it for another Profile.
+     *
+     * @return $this
+     */
+    public function addProfileSilver(): self
+    {
+        $this->components[] = ComponentTypes::PROFILE_SILVER;
 
         return $this;
     }
@@ -106,9 +133,9 @@ class DestinyComponentUrlBuilder
      *
      * @return $this
      */
-    public function addCharacters() : self
+    public function addCharacters(): self
     {
-        $this->components[] = ComponentTypes::Characters;
+        $this->components[] = ComponentTypes::CHARACTERS;
 
         return $this;
     }
@@ -121,9 +148,9 @@ class DestinyComponentUrlBuilder
      *
      * @return $this
      */
-    public function addCharacterInventories() : self
+    public function addCharacterInventories(): self
     {
-        $this->components[] = ComponentTypes::CharacterInventories;
+        $this->components[] = ComponentTypes::CHARACTER_INVENTORIES;
 
         return $this;
     }
@@ -135,9 +162,9 @@ class DestinyComponentUrlBuilder
      *
      * @return $this
      */
-    public function addCharacterProgressions() : self
+    public function addCharacterProgressions(): self
     {
-        $this->components[] = ComponentTypes::CharacterProgressions;
+        $this->components[] = ComponentTypes::CHARACTER_PROGRESSIONS;
 
         return $this;
     }
@@ -149,9 +176,9 @@ class DestinyComponentUrlBuilder
      *
      * @return $this
      */
-    public function addCharacterRenderData() : self
+    public function addCharacterRenderData(): self
     {
-        $this->components[] = ComponentTypes::CharacterRenderData;
+        $this->components[] = ComponentTypes::CHARACTER_RENDER_DATA;
 
         return $this;
     }
@@ -163,9 +190,9 @@ class DestinyComponentUrlBuilder
      *
      * @return $this
      */
-    public function addCharacterActivities() : self
+    public function addCharacterActivities(): self
     {
-        $this->components[] = ComponentTypes::CharacterActivities;
+        $this->components[] = ComponentTypes::CHARACTER_ACTIVITIES;
 
         return $this;
     }
@@ -175,9 +202,9 @@ class DestinyComponentUrlBuilder
      *
      * @return $this
      */
-    public function addCharacterEquipment() : self
+    public function addCharacterEquipment(): self
     {
-        $this->components[] = ComponentTypes::CharacterEquipment;
+        $this->components[] = ComponentTypes::CHARACTER_EQUIPMENT;
 
         return $this;
     }
@@ -188,9 +215,22 @@ class DestinyComponentUrlBuilder
      *
      * @return $this
      */
-    public function addItemInstances() : self
+    public function addItemInstances(): self
     {
-        $this->components[] = ComponentTypes::ItemInstances;
+        $this->components[] = ComponentTypes::ITEM_INSTANCES;
+
+        return $this;
+    }
+
+    /**
+     * Items can have Objectives (DestinyObjectiveDefinition) bound to them. If they do, this will return info
+     * for items that have such bound objectives.
+     *
+     * @return $this
+     */
+    public function addItemObjectives(): self
+    {
+        $this->components[] = ComponentTypes::ITEM_OBJECTIVES;
 
         return $this;
     }
@@ -201,9 +241,9 @@ class DestinyComponentUrlBuilder
      *
      * @return $this
      */
-    public function addItemPerks() : self
+    public function addItemPerks(): self
     {
-        $this->components[] = ComponentTypes::ItemPerks;
+        $this->components[] = ComponentTypes::ITEM_PERKS;
 
         return $this;
     }
@@ -213,9 +253,9 @@ class DestinyComponentUrlBuilder
      *
      * @return $this
      */
-    public function addItemRenderData() : self
+    public function addItemRenderData(): self
     {
-        $this->components[] = ComponentTypes::ItemRenderData;
+        $this->components[] = ComponentTypes::ITEM_RENDER_DATA;
 
         return $this;
     }
@@ -226,9 +266,9 @@ class DestinyComponentUrlBuilder
      *
      * @return $this
      */
-    public function addStats() : self
+    public function addStats(): self
     {
-        $this->components[] = ComponentTypes::ItemStats;
+        $this->components[] = ComponentTypes::ITEM_STATS;
 
         return $this;
     }
@@ -239,9 +279,9 @@ class DestinyComponentUrlBuilder
      *
      * @return $this
      */
-    public function addSockets() : self
+    public function addSockets(): self
     {
-        $this->components[] = ComponentTypes::ItemSockets;
+        $this->components[] = ComponentTypes::ITEM_SOCKETS;
 
         return $this;
     }
@@ -252,9 +292,9 @@ class DestinyComponentUrlBuilder
      *
      * @return $this
      */
-    public function addTalentGrids() : self
+    public function addTalentGrids(): self
     {
-        $this->components[] = ComponentTypes::ItemTalentGrids;
+        $this->components[] = ComponentTypes::ITEM_TALENT_GRIDS;
 
         return $this;
     }
@@ -266,9 +306,9 @@ class DestinyComponentUrlBuilder
      *
      * @return $this
      */
-    public function addCommonData() : self
+    public function addCommonData(): self
     {
-        $this->components[] = ComponentTypes::ItemCommonData;
+        $this->components[] = ComponentTypes::ITEM_COMMON_DATA;
 
         return $this;
     }
@@ -280,49 +320,134 @@ class DestinyComponentUrlBuilder
      *
      * @return $this
      */
-    public function addItemPlugStates() : self
+    public function addItemPlugStates(): self
     {
-        $this->components[] = ComponentTypes::ItemPlugStates;
+        $this->components[] = ComponentTypes::ITEM_PLUG_STATES;
 
         return $this;
     }
 
     /**
+     * When obtaining vendor information, this will return summary information about the Vendor
+     * or Vendors being returned.
+     *
+     *
      * @return $this
      */
-    public function addVendors() : self
+    public function addVendors(): self
     {
-        $this->components[] = ComponentTypes::Vendors;
+        $this->components[] = ComponentTypes::VENDORS;
 
         return $this;
     }
 
     /**
+     * When obtaining vendor information, this will return information about the categories of
+     * items provided by the Vendor.
+     *
      * @return $this
      */
-    public function addVendorCategories() : self
+    public function addVendorCategories(): self
     {
-        $this->components[] = ComponentTypes::VendorCategories;
+        $this->components[] = ComponentTypes::VENDOR_CATEGORIES;
 
         return $this;
     }
 
     /**
+     * When obtaining vendor information, this will return the information about items being sold by the Vendor.
+     *
      * @return $this
      */
-    public function addVendorSales() : self
+    public function addVendorSales(): self
     {
-        $this->components[] = ComponentTypes::VendorSales;
+        $this->components[] = ComponentTypes::VENDOR_SALES;
 
         return $this;
     }
 
     /**
+     * Asking for this component will return you the account's Kiosk statuses: that is,
+     * what items have been filled out/acquired. But only if you are the currently authenticated user
+     * or the user has elected to allow anonymous viewing of its progression info.
+     *
      * @return $this
      */
-    public function addKiosks() : self
+    public function addKiosks(): self
     {
-        $this->components[] = ComponentTypes::Kiosks;
+        $this->components[] = ComponentTypes::KIOSKS;
+
+        return $this;
+    }
+
+    /**
+     * A "shortcut" component that will give you all of the item hashes/quantities of items that the requested
+     * character can use to determine if an action (purchasing, socket insertion) has the required currency.
+     * (recall that all currencies are just items, and that some vendor purchases require items that you might
+     * not traditionally consider to be a "currency", like plugs/mods!).
+     *
+     * @return $this
+     */
+    public function addCurrencyLookups(): self
+    {
+        $this->components[] = ComponentTypes::CURRENCY_LOOKUP;
+
+        return $this;
+    }
+
+    /**
+     * Returns summary status information about all "Presentation Nodes". See DestinyPresentationNodeDefinition
+     * for more details, but the gist is that these are entities used by the game UI to bucket Collectibles and Records
+     * into a hierarchy of categories. You may ask for and use this data if you want to perform similar bucketing
+     * in your own UI: or you can skip it and roll your own.
+     *
+     * @return $this
+     */
+    public function addPresentationNodes(): self
+    {
+        $this->components[] = ComponentTypes::PRESENTATION_NODES;
+
+        return $this;
+    }
+
+    /**
+     * Returns summary status information about all "Collectibles". These are records of what items you've discovered
+     * while playing Destiny, and some other basic information. For detailed information, you will have to call
+     * a separate endpoint devoted to the purpose.
+     *
+     * @return $this
+     */
+    public function addCollectibles(): self
+    {
+        $this->components[] = ComponentTypes::COLLECTIBLES;
+
+        return $this;
+    }
+
+    /**
+     * Returns summary status information about all "Records (also known in the game as "Triumphs". I know, it's
+     * confusing because there's also "Moments of Triumph" that will themselves be represented as "Triumphs.").
+     *
+     * @return $this
+     */
+    public function addRecords(): self
+    {
+        $this->components[] = ComponentTypes::RECORDS;
+
+        return $this;
+    }
+
+    /**
+     * Returns information that Bungie considers to be "Transitory": data that may change too frequently or
+     * come from a non-authoritative source such that we don't consider the data to be fully trustworthy,
+     * but that might prove useful for some limited use cases. We can provide no guarantee of timeliness nor
+     * consistency for this data: buyer beware with the Transitory component.
+     *
+     * @return $this
+     */
+    public function addTransitory(): self
+    {
+        $this->components[] = ComponentTypes::TRANSITORY;
 
         return $this;
     }

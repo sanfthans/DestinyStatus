@@ -19,20 +19,20 @@ use Destiny\Profile\VendorReceiptCollection;
 /**
  * Class Profile.
  *
- * @property VendorReceiptCollection $vendorReceipts
- * @property InventoryCollection $profileInventory
- * @property CurrencyCollection $profileCurrencies
- * @property \Destiny\Profile\Profile $profile
- * @property KioskItemCollection $profileKiosks
- * @property CharacterCollection $characters
- * @property CharacterInventoryCollection $characterInventories
+ * @property VendorReceiptCollection        $vendorReceipts
+ * @property InventoryCollection            $profileInventory
+ * @property CurrencyCollection             $profileCurrencies
+ * @property \Destiny\Profile\Profile       $profile
+ * @property KioskItemCollection            $profileKiosks
+ * @property CharacterCollection            $characters
+ * @property CharacterInventoryCollection   $characterInventories
  * @property CharacterProgressionCollection $characterProgressions
- * @property array $characterRenderData
- * @property CharacterActivityCollection $characterActivities
- * @property CharacterEquipmentCollection $characterEquipment
- * @property array $characterKiosks
- * @property array $itemComponents
- * @property Account $account
+ * @property array                          $characterRenderData
+ * @property CharacterActivityCollection    $characterActivities
+ * @property CharacterEquipmentCollection   $characterEquipment
+ * @property array                          $characterKiosks
+ * @property array                          $itemComponents
+ * @property Account                        $account
  */
 class Profile extends Model
 {
@@ -135,8 +135,8 @@ class Profile extends Model
 
     public function loadCharacters()
     {
-        $stats = destiny()->stats($this->account);
-        $aggregate = destiny()->characterStats($this);
+        $stats = app('destiny')->stats($this->account);
+        $aggregate = app('destiny')->characterStats($this);
 
         foreach ($this->characters as $character) {
             $charId = $character->characterId;

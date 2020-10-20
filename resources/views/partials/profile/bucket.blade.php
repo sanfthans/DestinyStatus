@@ -14,13 +14,13 @@ $definition = $item->definition ?? null;
          data-complete="<?= boolval($item->isGridComplete) ?>"
          data-hash="<?= $item->hash ?>"
     >
-        <img class="icon" src="<?= bungie($definition->itemIcon) ?>">
+        <img class="icon" src="@bungie($definition->itemIcon)">
         <div class="name"><?= e($definition->itemName) ?></div>
         <div class="tier"><?= e($definition->tierName) ?></div>
         <div class="type opaque"><?= e($definition->itemTypeDisplayName) ?></div>
 
         <?php if($item->damage > 1): ?>
-        <?php if($item->damageType > App\Enums\DamageType::None): ?>
+        <?php if($item->damageType > App\Enums\DamageType::NONE): ?>
         <div class="damage" data-type-id="<?= e($item->damageType) ?>" data-type="<?= e($item->damageTypeName) ?>">
             <div class="icon"><img src="<?= asset($item->damageTypeIcon, !\App::isLocal()) ?>" alt="<?= e($item->damageTypeName) ?>">
             </div>

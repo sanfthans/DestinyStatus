@@ -15,16 +15,18 @@ class ConsoleHelper
      *
      * @return int
      */
-    public static function getIdFromConsoleString(string $console) : int
+    public static function getIdFromConsoleString(string $console): int
     {
         switch (strtolower($console)) {
             case 'xbl':
             case 'xbox':
-                return Console::Xbox;
+                return Console::XBOX;
             case 'psn':
-                return Console::Playstation;
+                return Console::PLAYSTATION;
             case 'pc':
-                return Console::Blizzard;
+                return Console::BLIZZARD;
+            case 'steam':
+                return Console::STEAM;
             default:
                 throw new \Exception('Unknown console: '.$console);
         }
@@ -35,15 +37,17 @@ class ConsoleHelper
      *
      * @return string
      */
-    public static function getConsoleStringFromId(int $id) : string
+    public static function getConsoleStringFromId(int $id): string
     {
         switch ($id) {
-            case Console::Xbox:
+            case Console::XBOX:
                 return 'xbl';
-            case Console::Playstation:
+            case Console::PLAYSTATION:
                 return 'psn';
-            case Console::Blizzard:
+            case Console::BLIZZARD:
                 return 'pc';
+            case Console::STEAM:
+                return 'steam';
             default:
                 return 'Unknown: '.$id;
         }
@@ -54,7 +58,7 @@ class ConsoleHelper
      *
      * @return string
      */
-    public static function getPlatformImage(string $console) : string
+    public static function getPlatformImage(string $console): string
     {
         return asset('/img/'.$console.'.png', !\App::isLocal());
     }

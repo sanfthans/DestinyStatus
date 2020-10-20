@@ -8,9 +8,9 @@ use Destiny\Definitions\Manifest\InventoryItem;
 /**
  * Class RequiredItem.
  *
- * @property int $count
- * @property string $itemHash
- * @property bool $deleteOnAction
+ * @property int           $count
+ * @property string        $itemHash
+ * @property bool          $deleteOnAction
  * @property InventoryItem $item
  */
 class RequiredItem extends Definition
@@ -24,6 +24,6 @@ class RequiredItem extends Definition
      */
     protected function gItem()
     {
-        return manifest()->inventoryItem($this->itemHash);
+        return app('destiny.manifest')->inventoryItem($this->itemHash);
     }
 }

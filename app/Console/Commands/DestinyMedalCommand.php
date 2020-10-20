@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Account;
 use App\Helpers\ConsoleHelper;
+use App\Helpers\StringHelper;
 use App\Models\AssignedBadge;
 use App\Models\Badge;
 use Illuminate\Console\Command;
@@ -11,31 +12,9 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class DestinyMedalCommand extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'destiny:medal {action} {name} {type} {medal}';
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'destiny:medal [give|take] iBot xbl donator';
 
-    /**
-     * DestinyMedalCommand constructor.
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
-     * @throws \Exception
-     */
     public function handle()
     {
         $action = $this->argument('action');
@@ -50,14 +29,14 @@ class DestinyMedalCommand extends Command
         $membershipType = ConsoleHelper::getIdFromConsoleString($type);
 
         try {
-            $badge = Badge::where('slug', slug($badge))
+            $badge = Badge::where('slug', StringHelper::slug($badge))
                 ->firstOrFail();
         } catch (ModelNotFoundException $ex) {
             throw new \Exception($badge.' was not a medal in our system.');
         }
 
         try {
-            $account = Account::where('slug', slug($name))
+            $account = Account::where('slug', StringHelper::slug($name))
                 ->where('membership_type', $membershipType)
                 ->firstOrFail();
         } catch (ModelNotFoundException $ex) {
@@ -83,5 +62,6 @@ class DestinyMedalCommand extends Command
                 $this->info('Badge revoked!');
             }
         }
+        return 0;
     }
 }

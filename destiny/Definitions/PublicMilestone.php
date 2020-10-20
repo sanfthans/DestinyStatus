@@ -3,6 +3,7 @@
 namespace Destiny\Definitions;
 
 use Carbon\Carbon;
+use Carbon\CarbonImmutable;
 use Destiny\Activity\ActivityCollection;
 use Destiny\Activity\ChallengeCollection;
 use Destiny\Activity\ModifierCollection;
@@ -18,11 +19,12 @@ use Destiny\Milestones\RewardEntryCollection;
  * Class PublicMilestone.
  *
  * @property string $milestoneHash
- * @property array $availableQuests
- * @property array $values
- * @property array $vendorHashes
+ * @property array  $availableQuests
+ * @property array  $values
+ * @property array  $vendorHashes
  * @property string $startDate
  * @property string $endDate
+ * @property int    $order
  * @property-read Milestone $definition
  * @property-read PublicQuestCollection $quests
  * @property-read Carbon $start
@@ -49,7 +51,7 @@ class PublicMilestone extends Definition
 
     public function __construct($properties = null)
     {
-        $properties['definition'] = manifest()->milestone($properties['milestoneHash']);
+        $properties['definition'] = app('destiny.manifest')->milestone($properties['milestoneHash']);
         parent::__construct($properties);
     }
 
@@ -58,14 +60,14 @@ class PublicMilestone extends Definition
         return new PublicQuestCollection($this->availableQuests ?? []);
     }
 
-    protected function gStart()
+    protected function gStart(): CarbonImmutable
     {
-        return carbon($this->startDate);
+        return CarbonImmutable::parse($this->startDate);
     }
 
-    protected function gEnd()
+    protected function gEnd(): CarbonImmutable
     {
-        return carbon($this->endDate);
+        return CarbonImmutable::parse($this->endDate);
     }
 
     protected function gIcon()
@@ -80,7 +82,11 @@ class PublicMilestone extends Definition
     protected function gHasIcon()
     {
         $definitionIcon = $this->definition->display->hasIcon;
-        $questIcon = $this->getFirstQuest()->questItem->display->hasIcon;
+
+        $questIcon = null;
+        if (!empty($this->getFirstQuest())) {
+            $questIcon = $this->getFirstQuest()->questItem->display->hasIcon;
+        }
 
         return $definitionIcon || $questIcon;
     }
@@ -89,8 +95,12 @@ class PublicMilestone extends Definition
     {
         $quest = $this->getFirstQuest();
 
-        /** @var MilestoneActivity $activity */
-        $activity = $quest->milestoneActivity;
+        /* @var MilestoneActivity $activity */
+        if (!empty($quest)) {
+            $activity = $quest->milestoneActivity;
+        } else {
+            return $this->definition->image;
+        }
 
         if (!empty($activity)) {
             $image = $activity->definition->pgcrImage;
@@ -198,7 +208,7 @@ class PublicMilestone extends Definition
         return $quest->milestoneChallenges;
     }
 
-    private function getFirstQuest() : MilestonePublicQuest
+    private function getFirstQuest(): ?MilestonePublicQuest
     {
         return $this->quests->first();
     }
@@ -209,6 +219,10 @@ class PublicMilestone extends Definition
     private function getMilestoneActivity()
     {
         $quest = $this->getFirstQuest();
+
+        if (empty($quest)) {
+            return;
+        }
 
         return $quest->milestoneActivity;
     }

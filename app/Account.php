@@ -3,26 +3,30 @@
 namespace App;
 
 use App\Helpers\ConsoleHelper;
+use App\Helpers\StringHelper;
 use App\Models\AssignedBadge;
 use App\Models\Badge;
 use App\Models\Bungie;
 use App\Models\Destiny1\Stats;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * Class Account.
  *
- * @property int $id
- * @property string $name
- * @property string $slug
- * @property string $membership_id
- * @property int $membership_type
- * @property Carbon $created_at
- * @property Carbon $updated_at
- * @property int $bungie_id
- * @property Stats $stats
- * @property Bungie $bungie
+ * @property int     $id
+ * @property string  $name
+ * @property string  $slug
+ * @property string  $membership_id
+ * @property int     $membership_type
+ * @property Carbon  $created_at
+ * @property Carbon  $updated_at
+ * @property int     $bungie_id
+ * @property Stats   $stats
+ * @property Bungie  $bungie
  * @property Badge[] $badges
  * @mixin \Eloquent
  * @mixin \Illuminate\Database\Eloquent\Builder
@@ -55,26 +59,29 @@ class Account extends Model
     public function setNameAttribute($value)
     {
         $this->attributes['name'] = $value;
-        $this->attributes['slug'] = slug($value);
+        $this->attributes['slug'] = StringHelper::slug($value);
     }
 
     //---------------------------------------------------------------------------------
     // Public Methods
     //---------------------------------------------------------------------------------
 
-    public function platformImage()
+    public function platformImage(): string
     {
         $platform = ConsoleHelper::getConsoleStringFromId($this->membership_type);
 
         return ConsoleHelper::getPlatformImage($platform);
     }
 
-    public function url()
+    public function url(): string
     {
-        return route('account', [ConsoleHelper::getConsoleStringFromId($this->membership_type), url_slug($this->name)]);
+        return route('account', [
+            ConsoleHelper::getConsoleStringFromId($this->membership_type),
+            StringHelper::urlSlug($this->name)
+        ]);
     }
 
-    public function renderBadges()
+    public function renderBadges(): string
     {
         $contents = '';
 
@@ -85,17 +92,21 @@ class Account extends Model
         return $contents;
     }
 
-    public function stats()
+    //---------------------------------------------------------------------------------
+    // Relationships
+    //---------------------------------------------------------------------------------
+
+    public function stats(): HasOne
     {
         return $this->hasOne(Stats::class, 'account_id', 'id');
     }
 
-    public function badges()
+    public function badges(): HasManyThrough
     {
         return $this->hasManyThrough(Badge::class, AssignedBadge::class, 'account_id', 'id', null, 'badge_id');
     }
 
-    public function bungie()
+    public function bungie(): BelongsTo
     {
         return $this->belongsTo(Bungie::class, 'id', 'bungie_id');
     }

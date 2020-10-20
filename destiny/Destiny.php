@@ -6,6 +6,7 @@ namespace Destiny;
 
 use App\Account;
 use App\Enums\ActivityModeType;
+use App\Exceptions\Destiny\NoClanException;
 use Destiny\Definitions\Components\Character;
 use Destiny\Definitions\PublicMilestone;
 use Destiny\Milestones\MilestoneHandler;
@@ -15,15 +16,8 @@ use Destiny\Milestones\MilestoneHandler;
  */
 class Destiny
 {
-    /**
-     * @var DestinyClient
-     */
-    protected $client;
-
-    /**
-     * @var DestinyPlatform
-     */
-    protected $platform;
+    protected DestinyClient $client;
+    protected DestinyPlatform $platform;
 
     public function __construct(DestinyClient $client, DestinyPlatform $platform)
     {
@@ -31,10 +25,7 @@ class Destiny
         $this->platform = $platform;
     }
 
-    /**
-     * @return Manifest
-     */
-    public function manifest() : Manifest
+    public function manifest(): Manifest
     {
         $result = $this->client->r($this->platform->manifest());
 
@@ -48,26 +39,14 @@ class Destiny
         dd($result);
     }
 
-    /**
-     * @param string $gamertag
-     *
-     * @return \Destiny\PlayerCollection
-     */
-    public function player($gamertag) : PlayerCollection
+    public function player(string $gamertag): PlayerCollection
     {
         $result = $this->client->r($this->platform->searchDestinyPlayer($gamertag));
 
         return new PlayerCollection($gamertag, $result);
     }
 
-    /**
-     * @param Player $player
-     *
-     * @throws \DestinyNoClanException
-     *
-     * @return Group
-     */
-    public function groups(Player $player) : Group
+    public function groups(Player $player): Group
     {
         $result = $this->client->r($this->platform->getGroups($player));
 
@@ -75,15 +54,10 @@ class Destiny
             return new Group($result['results'][0]['group']);
         }
 
-        throw new \DestinyNoClanException('Could not locate clan for user');
+        throw new NoClanException('Could not locate clan for user');
     }
 
-    /**
-     * @param Player $player
-     *
-     * @return Profile
-     */
-    public function profile(Player $player) : Profile
+    public function profile(Player $player): Profile
     {
         return \DB::transaction(function () use ($player) {
 
@@ -101,26 +75,14 @@ class Destiny
         });
     }
 
-    /**
-     * @param Account $account
-     *
-     * @return StatHandler
-     */
-    public function stats(Account $account) : StatHandler
+    public function stats(Account $account): StatHandler
     {
         $results = $this->client->r($this->platform->getDestinyStats($account));
 
         return new StatHandler($results);
     }
 
-    /**
-     * @param Profile $profile
-     *
-     * @internal param Player $player
-     *
-     * @return StatHandler
-     */
-    public function characterStats(Profile $profile)
+    public function characterStats(Profile $profile): StatHandler
     {
         $requests = [];
 
@@ -134,19 +96,13 @@ class Destiny
         return new StatHandler($results);
     }
 
-    /**
-     * @return MilestoneHandler
-     */
-    public function publicMilestones() : MilestoneHandler
+    public function publicMilestones(): MilestoneHandler
     {
         $milestones = $this->client->r($this->platform->getMilestones());
 
         return new MilestoneHandler(['milestones' => $milestones]);
     }
 
-    /**
-     * @param string $milestoneHash
-     */
     public function milestoneContent(string $milestoneHash)
     {
         $milestone = $this->client->r($this->platform->getMilestoneContent($milestoneHash));
@@ -154,9 +110,6 @@ class Destiny
         dd($milestone);
     }
 
-    /**
-     * @param Group $group
-     */
     public function clanMembers(Group $group)
     {
         $result = $this->client->r($this->platform->getClanMembers($group));
@@ -165,62 +118,37 @@ class Destiny
         dd($result);
     }
 
-    /**
-     * @param Group $group
-     *
-     * @return Definitions\Group
-     */
-    public function clanOverview(Group $group) : \Destiny\Definitions\Group
+    public function clanOverview(Group $group): \Destiny\Definitions\Group
     {
         $result = $this->client->r($this->platform->getClan($group));
 
         return new \Destiny\Definitions\Group($result);
     }
 
-    /**
-     * @param Group $group
-     *
-     * @return StatisticsCollection
-     */
-    public function clanStats(Group $group) : StatisticsCollection
+    public function clanStats(Group $group): StatisticsCollection
     {
         $result = $this->client->r($this->platform->getClanStats($group));
 
         return new StatisticsCollection($result ?? []);
     }
 
-    /**
-     * @param Group $group
-     *
-     * @return LeaderboardHandler
-     */
-    public function clanLeaderboards(Group $group) : LeaderboardHandler
+    public function clanLeaderboards(Group $group): LeaderboardHandler
     {
-        $result = $this->client->r($this->platform->getClanLeaderboard($group, [ActivityModeType::AllPvP, ActivityModeType::AllPvE]));
+        $result = $this->client->r($this->platform->getClanLeaderboard($group, [ActivityModeType::ALL_PVP, ActivityModeType::ALL_PVE]));
 
         return new LeaderboardHandler($result ?? []);
     }
 
-    /**
-     * @param Group $group
-     *
-     * @return PublicMilestone
-     */
-    public function clanRewards(Group $group) : PublicMilestone
+    public function clanRewards(Group $group): PublicMilestone
     {
         $result = $this->client->r($this->platform->getClanWeeklyRewards($group));
 
         return new PublicMilestone($result);
     }
 
-    /**
-     * @param Group $group
-     *
-     * @return array
-     */
-    public function clanAll(Group $group) : array
+    public function clanAll(Group $group): array
     {
-        $leaderboard = $this->platform->getClanLeaderboard($group, [ActivityModeType::AllPvP, ActivityModeType::AllPvE]);
+        $leaderboard = $this->platform->getClanLeaderboard($group, [ActivityModeType::ALL_PVP, ActivityModeType::ALL_PVE]);
         $rewards = $this->platform->getClanWeeklyRewards($group);
 
         return $this->client->r([

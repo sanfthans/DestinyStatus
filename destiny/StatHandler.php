@@ -4,6 +4,7 @@ namespace Destiny;
 
 use Destiny\Activity\ActivityStatCollection;
 use Destiny\Definitions\AccountStats as StatDefinition;
+use Illuminate\Support\Arr;
 
 /**
  * Class StatHandler.
@@ -26,7 +27,7 @@ class StatHandler extends StatDefinition
      *
      * @return StatisticsCollection
      */
-    public function getCharacterStats(string $characterId, string $mode = 'allTime') : StatisticsCollection
+    public function getCharacterStats(string $characterId, string $mode = 'allTime'): StatisticsCollection
     {
         if ($mode === 'allTime') {
             $mode = 'merged.allTime';
@@ -39,7 +40,7 @@ class StatHandler extends StatDefinition
             return new StatisticsCollection([]);
         }
         foreach ($this->characters as $character) {
-            $stats[$character['characterId']] = array_get($character, $mode);
+            $stats[$character['characterId']] = Arr::get($character, $mode);
         }
 
         return new StatisticsCollection($stats[$characterId] ?? []);
@@ -50,7 +51,7 @@ class StatHandler extends StatDefinition
      *
      * @return ActivityStatCollection
      */
-    public function getCharacterActivityStats(string $characterId) : ActivityStatCollection
+    public function getCharacterActivityStats(string $characterId): ActivityStatCollection
     {
         return new ActivityStatCollection($this->properties[$characterId.'.stats']['activities'] ?? []);
     }

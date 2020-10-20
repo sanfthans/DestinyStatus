@@ -8,8 +8,8 @@ use Destiny\Definitions\Definition;
  * Class Quantity.
  *
  * @property string $itemHash
- * @property int $itemInstanceId
- * @property int $quantity
+ * @property int    $itemInstanceId
+ * @property int    $quantity
  */
 class Quantity extends Definition
 {
@@ -19,6 +19,6 @@ class Quantity extends Definition
 
     protected function gItem()
     {
-        return manifest()->inventoryItem($this->itemHash);
+        return app('destiny.manifest')->inventoryItem($this->itemHash);
     }
 }
